@@ -3,16 +3,28 @@
     "id": "ieee-computer-society",
     "titulo": "IEEE Computer Society",
     "descripcion": "Landing Page de la IEEE Computer Society en la USIL. Con multiples módulos e inscripción de miembros.",
-    "imagen": "/images/proyectos/ieee-computer-society.svg",
-    "techs": ["astro", "typescript", "react", "postgresql", "tailwind"],
+    "imagen": "./images/proyectos/ieee-computer-society.svg",
+    "techs": [
+      "astro",
+      "typescript",
+      "react",
+      "postgresql",
+      "tailwind"
+    ],
     "repo": "https://github.com/"
   },
   {
     "id": "sistema-ferreteria",
     "titulo": "Sistema de Ferreteria",
     "descripcion": "Sistema de gestión de almacenamiento, sistema de ventas y facturación de una ferreteria.",
-    "imagen": "/images/proyectos/sistema-ferreteria.svg",
-    "techs": ["springboot", "java", "astro", "react", "postgresql"],
+    "imagen": "./images/proyectos/sistema-ferreteria.svg",
+    "techs": [
+      "springboot",
+      "java",
+      "astro",
+      "react",
+      "postgresql"
+    ],
     "repo": "https://github.com/"
   }
 ]
