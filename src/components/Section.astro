@@ -1,0 +1,24 @@
+---
+interface Props {
+  id: string;
+  titulo: string;
+  /** El diseño usa 30px en WhoIAm y 37px en el resto */
+  gap?: number;
+}
+
+const { id, titulo, gap = 37 } = Astro.props;
+---
+
+<section
+  id={id}
+  class="flex w-[var(--spacing-main)] scroll-mt-[120px] flex-col items-start px-[50px] py-[20px]"
+  style={`gap:${gap}px`}
+  aria-labelledby={`${id}-titulo`}
+>
+  <div class="flex w-[var(--spacing-content)] items-center p-[10px]">
+    <h2 id={`${id}-titulo`} class="text-[36px] leading-[48px] text-cyan">
+      {titulo}
+    </h2>
+  </div>
+  <slot />
+</section>

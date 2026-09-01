@@ -1,0 +1,84 @@
+---
+import { PERFIL } from "../data/icons";
+
+/**
+ * Headbar flotante. No va de borde a borde a propósito: centrada y con aire
+ * arriba y a los lados, el fondo se ve alrededor y la barra se lee como un
+ * panel sobre la escena, no como una franja que la tapa.
+ *
+ * El nav del mockup era un prototipo (listaba "Experiencia", que no existe
+ * como artboard). Aquí refleja las secciones reales.
+ */
+const NAV = [
+  { id: "whoiam", label: "WhoIAm" },
+  { id: "stack", label: "Stack Tecnologico" },
+  { id: "proyectos", label: "Proyectos" },
+  { id: "certificados", label: "Certificados" },
+  { id: "participaciones", label: "Participaciones" },
+];
+---
+
+<header
+  class="glass sticky top-[20px] z-50 mx-auto flex h-[var(--spacing-header)] w-[var(--spacing-main)] items-center justify-between rounded-[var(--radius-btn)] px-[60px] shadow-glow"
+>
+  <a
+    href="#whoiam"
+    class="text-[20px] leading-[26px] font-bold text-ink transition-[color,text-shadow] duration-200 ease-out hover:text-amber hover:[text-shadow:0_0_10px_rgb(255_202_115_/_0.5)]"
+  >
+    {PERFIL.nombre}
+  </a>
+
+  <nav aria-label="Secciones del portafolio">
+    <ul class="flex list-none items-center gap-[28px]">
+      {
+        NAV.map(({ id, label }) => (
+          <li>
+            <a
+              href={`#${id}`}
+              data-nav={id}
+              class="block py-[8px] text-[16px] leading-[21px] whitespace-nowrap text-ink transition-[color,transform,text-shadow] duration-200 ease-out hover:-translate-y-[2px] hover:text-amber aria-[current=true]:text-amber aria-[current=true]:[text-shadow:0_0_10px_rgb(255_202_115_/_0.5)]"
+            >
+              - {label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>
+
+<script>
+  // Scroll-spy: marca el enlace de la sección visible.
+  const enlaces = new Map<string, HTMLAnchorElement>(
+    [...document.querySelectorAll<HTMLAnchorElement>("[data-nav]")].map((a) => [
+      a.dataset.nav!,
+      a,
+    ]),
+  );
+
+  const secciones = [...enlaces.keys()]
+    .map((id) => document.getElementById(id))
+    .filter((el): el is HTMLElement => el !== null);
+
+  let activo: string | null = null;
+
+  const marcar = (id: string) => {
+    if (id === activo) return;
+    if (activo) enlaces.get(activo)?.removeAttribute("aria-current");
+    enlaces.get(id)?.setAttribute("aria-current", "true");
+    activo = id;
+  };
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries
+        .filter((e) => e.isIntersecting)
+        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+      if (visible) marcar(visible.target.id);
+    },
+    { rootMargin: "-20% 0px -70% 0px", threshold: 0 },
+  );
+
+  secciones.forEach((s) => observer.observe(s));
+  if (secciones[0]) marcar(secciones[0].id);
+</script>

@@ -1,0 +1,39 @@
+---
+import Icon from "./Icon.astro";
+import { TECH, type TechKey } from "../data/tech";
+import { aRGB, aHex, mezclar, legible, FONDO } from "../lib/color";
+
+interface Props {
+  tech: TechKey;
+}
+
+const { tech } = Astro.props;
+const t: {
+  nombre: string;
+  path: string;
+  color: string;
+  bg?: string;
+  border?: string;
+} = TECH[tech];
+
+const fondoBase = aRGB(FONDO);
+const marca = aRGB(t.color);
+
+// Las 7 tecnologías de los mockups traen bg/borde a mano; el resto se derivan.
+const bg = t.bg ? aRGB(t.bg) : mezclar(marca, fondoBase, 0.1);
+const borde = t.border ? aRGB(t.border) : mezclar(marca, fondoBase, 0.22);
+
+/*
+ * El color de marca se aclara solo si no llega a AA sobre su propio fondo.
+ * Los 7 diseñados a mano ya pasan, así que salen tal cual.
+ */
+const texto = aHex(legible(marca, bg));
+---
+
+<span
+  class="inline-flex items-center gap-[5px] rounded-[25px] border px-[9px] py-[5px] text-[16px] leading-[19px]"
+  style={`background:${aHex(bg)};border-color:${aHex(borde)};color:${texto}`}
+>
+  <Icon path={t.path} size={20} />
+  {t.nombre}
+</span>

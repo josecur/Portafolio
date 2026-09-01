@@ -1,0 +1,28 @@
+---
+import Icon from "./Icon.astro";
+import { ICONS, type IconKey } from "../data/icons";
+
+interface Props {
+  nombre: string;
+  icon: IconKey;
+  url: string;
+}
+
+const { nombre, icon, url } = Astro.props;
+---
+
+<a
+  href={url}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="glass group inline-flex h-[60px] items-center gap-[10px] rounded-[var(--radius-btn)] px-[10px] text-[16px] leading-[21px] text-ink shadow-glow transition-[transform,box-shadow,border-color,color] duration-200 ease-out hover:-translate-y-[2px] hover:border-amber/40 hover:text-amber hover:shadow-glow-btn-strong"
+>
+  <span class="flex w-[40px] justify-center">
+    <Icon
+      path={ICONS[icon]}
+      size={28}
+      class="transition-transform duration-200 ease-out group-hover:scale-110"
+    />
+  </span>
+  <span class="px-[10px]">{nombre}</span>
+</a>

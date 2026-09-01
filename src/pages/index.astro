@@ -1,0 +1,74 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import Section from "../components/Section.astro";
+import CardGrid from "../components/CardGrid.astro";
+import Consola from "../components/Consola.astro";
+import SocialButton from "../components/SocialButton.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import CredentialCard from "../components/CredentialCard.astro";
+import Orbita from "../components/Orbita.astro";
+import Hero from "../components/Hero.astro";
+import { SOCIALS, PERFIL } from "../data/icons";
+
+const proyectos = await getCollection("proyectos");
+const certificados = await getCollection("certificados");
+const participaciones = await getCollection("participaciones");
+---
+
+<Layout>
+  <Hero />
+
+  <Section id="whoiam" titulo="Whoiam" gap={30}>
+    <Consola prompt={PERFIL.prompt} texto={PERFIL.bio} />
+
+    <div class="flex w-[var(--spacing-content)] items-center justify-between">
+      {SOCIALS.map((s) => <SocialButton {...s} />)}
+    </div>
+  </Section>
+
+  <Section id="stack" titulo="Tecnologías">
+    {/* La órbita conserva sus 979px de geometría original; solo se centra */}
+    <div class="flex w-[var(--spacing-content)] justify-center">
+      <Orbita />
+    </div>
+  </Section>
+
+  <Section id="proyectos" titulo="Proyectos">
+    <CardGrid>
+      {proyectos.map(({ data }) => <ProjectCard {...data} />)}
+    </CardGrid>
+  </Section>
+
+  <Section id="certificados" titulo="Certificados">
+    <CardGrid>
+      {
+        certificados.map(({ data }) => (
+          <CredentialCard
+            titulo={data.titulo}
+            descripcion={data.descripcion}
+            imagen={data.imagen}
+            pdf={data.pdf}
+            meta={[`Nivel: ${data.nivel}`, `Horas: ${data.horas}`]}
+          />
+        ))
+      }
+    </CardGrid>
+  </Section>
+
+  <Section id="participaciones" titulo="Participación en Eventos/Talleres">
+    <CardGrid>
+      {
+        participaciones.map(({ data }) => (
+          <CredentialCard
+            titulo={data.titulo}
+            descripcion={data.descripcion}
+            imagen={data.imagen}
+            pdf={data.pdf}
+            meta={[`Horas: ${data.horas}`]}
+          />
+        ))
+      }
+    </CardGrid>
+  </Section>
+</Layout>

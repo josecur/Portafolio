@@ -1,0 +1,13 @@
+---
+/**
+ * Columnas de ancho FIJO (--spacing-card), no fraccionarias: al ensanchar la
+ * columna a 1200px las cards conservan sus 452px originales y la rejilla se
+ * centra. El gutter sube a 60px para que se vea el fondo entre las dos.
+ */
+---
+
+<div
+  class="grid w-[var(--spacing-content)] grid-cols-[repeat(2,var(--spacing-card))] items-stretch justify-center gap-x-[60px] gap-y-[37px]"
+>
+  <slot />
+</div>

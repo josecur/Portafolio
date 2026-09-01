@@ -1,0 +1,56 @@
+---
+import TechBadge from "./TechBadge.astro";
+import pkg from "../../package.json";
+
+/**
+ * Colofón. Sin cristal, como el hero: es información de servicio, no
+ * contenido, y así el fondo sigue respirando hasta el final de la página.
+ *
+ * Las versiones salen de package.json en build, para que no se queden
+ * mintiendo cuando actualices una dependencia.
+ */
+const version = (n: string) =>
+  (pkg.dependencies as Record<string, string>)[n]?.replace(/^[\^~]/, "") ?? "";
+
+const anio = new Date().getFullYear();
+---
+
+<footer
+  class="mt-[60px] flex w-[var(--spacing-main)] flex-col gap-[22px] border-t border-divider px-[60px] pt-[40px] pb-[60px]"
+>
+  {/* Dos fases distintas: primero se diseña, luego se construye */}
+  <div class="flex flex-wrap items-center gap-x-[30px] gap-y-[14px]">
+    <div class="flex flex-wrap items-center gap-[12px]">
+      <span class="text-[16px] leading-[21px] text-ink">Diseñado en</span>
+      <TechBadge tech="figma" />
+    </div>
+
+    <div class="flex flex-wrap items-center gap-[12px]">
+      <span class="text-[16px] leading-[21px] text-ink">Hecho con</span>
+      <TechBadge tech="astro" />
+      <TechBadge tech="typescript" />
+      <TechBadge tech="tailwind" />
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-[8px] text-[14px] leading-[20px] text-ink">
+    <p>
+      Astro {version("astro")} · Tailwind CSS {version("tailwindcss")} ·
+      tipografía <span class="font-bold">JetBrains Mono</span> autoalojada ·
+      iconos de <span class="font-bold">simple-icons</span>.
+    </p>
+    <p>
+      Sin framework de UI: el único JavaScript de cliente es la órbita de
+      tecnologías, el parallax del fondo y sus eventos.
+    </p>
+    <p>
+      El fondo no es una imagen. Los planetas, las nebulosas y el grabado se
+      generan en cada build como SVG determinista a partir de una semilla, con
+      la misma función que dibuja el planeta de la órbita.
+    </p>
+  </div>
+
+  <p class="text-[14px] leading-[20px] text-ink">
+    © {anio} Jose Cordova
+  </p>
+</footer>

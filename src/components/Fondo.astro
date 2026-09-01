@@ -1,0 +1,305 @@
+---
+import { generarEscena } from "../lib/fondo";
+import Eventos from "./Eventos.astro";
+
+/**
+ * Escena espacial de fondo. Cuatro planos de profundidad que se desplazan
+ * distinto con el scroll y con el mouse, más un foco de luz que sigue al
+ * cursor y enciende las estrellas por donde pasa.
+ *
+ * El SVG se genera en build (ver src/lib/fondo.ts) y va inline: es lo que
+ * permite que el parpadeo en CSS funcione, cosa que no ocurriría si la
+ * escena viniera como background-image.
+ */
+const escena = generarEscena();
+const vb = `0 0 ${escena.ancho} ${escena.alto}`;
+
+// Desplazamiento con el mouse, en px. A mayor cercanía, mayor desfase.
+const PLANOS = [
+  { html: escena.lejano, mouse: 3, clase: "" },
+  { html: escena.cuerpos, mouse: 12, clase: "cuerpos" },
+  { html: escena.medio, mouse: 7, clase: "" },
+  { html: escena.cerca, mouse: 18, clase: "" },
+];
+---
+
+<div class="fondo" aria-hidden="true" data-fondo>
+  <div class="escena" data-escena>
+    {
+      PLANOS.map((p) => (
+        <svg
+          class={`plano ${p.clase}`}
+          viewBox={vb}
+          preserveAspectRatio="xMidYMid slice"
+          style={`--m:${p.mouse}`}
+          set:html={p.html}
+        />
+      ))
+    }
+
+    {/* Estrellas que parpadean */}
+    <svg
+      class="plano destellos"
+      viewBox={vb}
+      preserveAspectRatio="xMidYMid slice"
+      style="--m:18"
+    >
+      <g fill="#C0CAF5">
+        {
+          escena.destellos.map((d) => (
+            <circle
+              cx={d.x}
+              cy={d.y}
+              r={d.r}
+              style={`--dur:${d.dur}s;--retraso:${d.retraso}s`}
+            />
+          ))
+        }
+      </g>
+    </svg>
+
+    {/*
+      Foco: una copia más brillante del plano cercano, recortada con un
+      degradado radial que sigue al cursor. Las estrellas se encienden de
+      verdad, y cuesta un solo elemento en vez de recalcular partículas.
+    */}
+    <svg
+      class="plano foco"
+      viewBox={vb}
+      preserveAspectRatio="xMidYMid slice"
+      style="--m:18"
+      set:html={escena.cerca}
+    />
+
+    {/* Estrellas fugaces */}
+    <span class="fugaz fugaz-1"></span>
+    <span class="fugaz fugaz-2"></span>
+    <span class="fugaz fugaz-3"></span>
+  </div>
+
+  {/* Eventos aleatorios: fuera de .escena, no los arrastra el parallax */}
+  <Eventos />
+</div>
+
+<style>
+  .fondo {
+    position: fixed;
+    inset: 0;
+    z-index: -10;
+    overflow: hidden;
+    background: var(--color-bg);
+    pointer-events: none;
+    /* Posición del cursor, en coordenadas de la escena */
+    --mx: 50vw;
+    --my: 50vh;
+    /* Desfase normalizado del cursor, de -1 a 1 */
+    --dx: 0;
+    --dy: 0;
+    /* Cuánto ha bajado la escena por el parallax de scroll */
+    --scroll: 0px;
+  }
+
+  .escena {
+    position: absolute;
+    inset: 0;
+    /* El script la alarga para cubrir el recorrido del parallax */
+    height: 100%;
+    translate: 0 calc(var(--scroll) * -1);
+  }
+
+  .plano {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    translate: calc(var(--dx) * var(--m) * 1px) calc(var(--dy) * var(--m) * 1px);
+    will-change: translate;
+  }
+
+  /* Estrellas 50%, planetas 28%: una masa llena a 28% sobre #15161F da
+     rgb(69,69,78), que es el valor medido en el mockup del diseño. */
+  .plano {
+    opacity: 0.5;
+  }
+
+  .plano.cuerpos {
+    opacity: 0.28;
+  }
+
+  .destellos circle {
+    animation: parpadeo var(--dur) ease-in-out var(--retraso) infinite;
+  }
+
+  @keyframes parpadeo {
+    0%,
+    100% {
+      opacity: 0.25;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  .foco {
+    opacity: 0.75;
+    -webkit-mask-image: radial-gradient(
+      circle 240px at var(--mx) var(--my),
+      #000 0%,
+      transparent 70%
+    );
+    mask-image: radial-gradient(
+      circle 240px at var(--mx) var(--my),
+      #000 0%,
+      transparent 70%
+    );
+  }
+
+  .fugaz {
+    position: absolute;
+    width: 160px;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgb(192 202 245 / 0.9),
+      transparent
+    );
+    opacity: 0;
+    rotate: 24deg;
+    animation: fugaz 21s linear infinite;
+  }
+
+  /* Cada una cruza por una zona distinta y en otro momento */
+  .fugaz-1 {
+    top: 14%;
+    left: -12%;
+    animation-duration: 19s;
+    animation-delay: 4s;
+  }
+  .fugaz-2 {
+    top: 52%;
+    left: -12%;
+    animation-duration: 27s;
+    animation-delay: 13s;
+    rotate: 16deg;
+  }
+  .fugaz-3 {
+    top: 78%;
+    left: -12%;
+    animation-duration: 23s;
+    animation-delay: 24s;
+    rotate: 31deg;
+  }
+
+  @keyframes fugaz {
+    0%,
+    100% {
+      opacity: 0;
+      translate: 0 0;
+    }
+    0.6% {
+      opacity: 0;
+      translate: 0 0;
+    }
+    2.4% {
+      opacity: 1;
+    }
+    6% {
+      opacity: 0;
+      translate: 78vw 34vh;
+    }
+    100% {
+      translate: 78vw 34vh;
+    }
+  }
+
+  /* Sin animación: escena quieta, sin parallax ni parpadeo ni fugaces */
+  @media (prefers-reduced-motion: reduce) {
+    .escena {
+      translate: none;
+    }
+    .plano {
+      translate: none;
+    }
+    .destellos circle {
+      animation: none;
+      opacity: 0.7;
+    }
+    .fugaz {
+      display: none;
+    }
+    .foco {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const fondo = document.querySelector<HTMLElement>("[data-fondo]");
+  const escena = document.querySelector<HTMLElement>("[data-escena]");
+
+  if (fondo && escena && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const FACTOR = 0.3; // el fondo baja al 30% de la velocidad del contenido
+
+    // Última posición del cursor, en coordenadas de la ventana
+    let cx = innerWidth / 2;
+    let cy = innerHeight / 2;
+    let pendiente = false;
+
+    /**
+     * La escena mide la ventana más el 30% del recorrido, para seguir
+     * cubriendo por mucho que crezca la página.
+     */
+    const medir = () => {
+      const recorrido = document.documentElement.scrollHeight - innerHeight;
+      escena.style.height = `${innerHeight + Math.max(0, recorrido) * FACTOR}px`;
+    };
+
+    const pintar = () => {
+      pendiente = false;
+      const desliz = scrollY * FACTOR;
+      fondo.style.setProperty("--scroll", `${desliz}px`);
+
+      /*
+       * El foco vive dentro de la escena, que es más alta que la ventana y
+       * va desplazada por el parallax. Hay que sumarle ese desliz para que
+       * el halo caiga justo bajo el cursor.
+       */
+      fondo.style.setProperty("--mx", `${cx}px`);
+      fondo.style.setProperty("--my", `${cy + desliz}px`);
+
+      // De -1 a 1, para que cada plano lo multiplique por su profundidad
+      fondo.style.setProperty("--dx", `${(0.5 - cx / innerWidth) * 2}`);
+      fondo.style.setProperty("--dy", `${(0.5 - cy / innerHeight) * 2}`);
+    };
+
+    const pedir = () => {
+      if (pendiente) return;
+      pendiente = true;
+      requestAnimationFrame(pintar);
+    };
+
+    addEventListener("scroll", pedir, { passive: true });
+    addEventListener(
+      "pointermove",
+      (e) => {
+        cx = e.clientX;
+        cy = e.clientY;
+        pedir();
+      },
+      { passive: true },
+    );
+    addEventListener("resize", () => {
+      medir();
+      pedir();
+    });
+
+    medir();
+    pintar();
+
+    // La altura del documento cambia cuando cargan imágenes o fuentes
+    if ("ResizeObserver" in window) {
+      new ResizeObserver(medir).observe(document.body);
+    }
+  }
+</script>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 389 192" width="389" height="192" role="img" aria-label="Sistema de Ferreteria">
+  <rect width="389" height="192" fill="#1F2130"/>
+  <g fill="none" stroke="#C0CAF5" stroke-opacity=".18">
+    <path d="M0 48h389M0 96h389M0 144h389M97 0v192M195 0v192M292 0v192"/>
+  </g>
+  <text x="194.5" y="98" fill="#C0CAF5" fill-opacity=".45" font-family="monospace" font-size="14" text-anchor="middle">Sistema de Ferreteria</text>
+</svg>

@@ -1,0 +1,151 @@
+@import "tailwindcss";
+@import "@fontsource/jetbrains-mono/latin-400.css";
+@import "@fontsource/jetbrains-mono/latin-700.css";
+
+/* ---------------------------------------------------------------------------
+   Design tokens — Tokyo Night, extraídos de diseno_portafolio/*.txt
+   --------------------------------------------------------------------------- */
+@theme {
+  --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+
+  /* Superficies */
+  --color-bg: #15161f;
+  --color-glass: rgb(36 40 59 / 0.22);
+  --color-glass-solid: #181a25;
+  /* mezcla real de glass sobre bg */
+  --color-hairline: rgb(192 202 245 / 0.15);
+  --color-divider: rgb(192 202 245 / 0.18);
+
+  /* Texto y acentos */
+  --color-ink: #c0caf5;
+  --color-cyan: #2ac3de;
+  /* títulos de sección */
+  --color-blue: #7aa2f7;
+  /* títulos de card */
+  --color-amber: #ffca73;
+  /* nav activo, prompt */
+  --color-green: #9ece6a;
+  /* links, metadatos */
+  --color-status: #22c55e;
+  --color-status-ink: #4ade80;
+
+  /* Semáforo de la consola */
+  --color-unix-red: #ff1111;
+  --color-unix-yellow: #ffca73;
+  --color-unix-green: #9ece6a;
+
+  /* Formas */
+  --radius-card: 25px;
+  --radius-btn: 15px;
+
+  /* Glows */
+  --shadow-glow: 0 0 25px rgb(192 202 245 / 0.3);
+  --shadow-glow-soft: 0 0 25px rgb(192 202 245 / 0.18);
+  --shadow-glow-strong: 0 0 35px rgb(192 202 245 / 0.45);
+
+  /* Los botones glowean en el mismo ámbar del nav activo */
+  --shadow-glow-btn: 0 0 10px 3px rgb(255 202 115 / 0.18);
+  --shadow-glow-btn-strong: 0 0 16px 4px rgb(255 202 115 / 0.35);
+
+  /* Medidas del artboard */
+  --spacing-main: 1300px;
+  --spacing-content: 1200px;
+  /* Las cards conservan su ancho original: (979 - 50 - 25) / 2 */
+  --spacing-card: 452px;
+  /* Alto de la headbar + su aire, para el scroll-mt de las secciones */
+  --spacing-header: 76px;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-mono);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Los títulos largos reparten mejor las líneas */
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: rgb(255 202 115 / 0.3);
+    color: #fff;
+  }
+
+  /* Scrollbar en la paleta */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(192 202 245 / 0.25) transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgb(192 202 245 / 0.25);
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(192 202 245 / 0.4);
+    background-clip: content-box;
+  }
+
+  /* Foco visible para navegación por teclado */
+  :focus-visible {
+    outline: 2px solid var(--color-amber);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* El bloque de 4 propiedades que el diseño repite ~15 veces */
+@utility glass {
+  background: var(--color-glass);
+  border: 1px solid var(--color-hairline);
+  backdrop-filter: blur(7px);
+}
+
+/* Fallback: sin transparencia, el color sólido equivalente */
+@media (prefers-reduced-transparency: reduce) {
+  .glass {
+    background: var(--color-glass-solid);
+    backdrop-filter: none;
+  }
+}

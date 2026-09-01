@@ -1,0 +1,18 @@
+[
+  {
+    "id": "dataset-investigacion",
+    "titulo": "Aprende a Construir tu dataset para proyectos de investigación",
+    "descripcion": "Tecnicas de data labeling",
+    "imagen": "/images/participaciones/dataset.svg",
+    "horas": 30,
+    "pdf": "/pdf/participaciones/dataset.pdf"
+  },
+  {
+    "id": "dataset-investigacion-2",
+    "titulo": "Aprende a Construir tu dataset para proyectos de investigación",
+    "descripcion": "Tecnicas de data labeling",
+    "imagen": "/images/participaciones/dataset.svg",
+    "horas": 30,
+    "pdf": "/pdf/participaciones/dataset.pdf"
+  }
+]

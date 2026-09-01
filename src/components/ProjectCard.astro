@@ -1,0 +1,66 @@
+---
+import Icon from "./Icon.astro";
+import TechBadge from "./TechBadge.astro";
+import { ICONS } from "../data/icons";
+import type { TechKey } from "../data/tech";
+
+interface Props {
+  titulo: string;
+  descripcion: string;
+  imagen: string;
+  techs: string[];
+  repo: string;
+}
+
+const { titulo, descripcion, imagen, techs, repo } = Astro.props;
+---
+
+<article
+  class="glass group flex flex-col rounded-[var(--radius-card)] pb-[10px] shadow-glow transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-[4px] hover:border-ink/30 hover:shadow-glow-strong"
+>
+  <div class="h-[192px] shrink-0 overflow-hidden rounded-t-[var(--radius-card)] border-b border-divider">
+    <img
+      src={imagen}
+      alt={`Captura del proyecto ${titulo}`}
+      width="389"
+      height="191"
+      loading="lazy"
+      decoding="async"
+      class="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.04]"
+    />
+  </div>
+
+  <div class="flex flex-1 flex-col gap-[10px] px-[10px] py-[20px]">
+    <h3 class="p-[10px] text-[24px] leading-[32px] font-bold text-blue">
+      {titulo}
+    </h3>
+
+    <p class="p-[10px] text-[16px] leading-[21px] text-ink">{descripcion}</p>
+
+    <ul class="flex list-none flex-wrap gap-[10px] py-[10px]">
+      {
+        techs.map((t) => (
+          <li>
+            <TechBadge tech={t as TechKey} />
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="mt-auto flex items-center px-[10px]">
+      <a
+        href={repo}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="group/link inline-flex items-center gap-[5px] rounded-[8px] px-[5px] text-[16px] leading-[21px] text-green transition-[filter] duration-200 ease-out hover:brightness-125 hover:drop-shadow-[0_0_8px_rgb(158_206_106/0.5)]"
+      >
+        <Icon path={ICONS.github} size={28} />
+        <span
+          class="underline decoration-transparent decoration-1 underline-offset-4 transition-colors duration-200 group-hover/link:decoration-current"
+          >Repo</span
+        >
+        <span class="sr-only">de {titulo}</span>
+      </a>
+    </div>
+  </div>
+</article>

@@ -1,0 +1,323 @@
+---
+import { TECH, ORBITA } from "../data/tech";
+import { esferaGrabada } from "../lib/fondo";
+
+/**
+ * Planeta con anillo inclinado. Los iconos recorren la elipse, encogen al
+ * alejarse y pasan POR DETRÁS del planeta.
+ *
+ * La oclusión no necesita que el planeta sea opaco: la capa de iconos
+ * traseros lleva una máscara con un agujero circular del tamaño del planeta,
+ * así que el icono se recorta al cruzarlo aunque el planeta sea solo trazo.
+ *
+ * Geometría tomada del export de Figma. En el export el anillo queda 150px
+ * por encima del planeta, cosa que trato como artefacto del agrupado de
+ * Figma —en el PNG se ven concéntricos— así que aquí lo son.
+ */
+
+const W = 979; // ancho de la caja
+const H = 547; // alto de la caja
+const CX = W / 2;
+const CY = H / 2;
+const RX = 415; // semieje mayor del anillo  (Ellipse 5: 829.34 / 2)
+const RY = 79; // semieje menor del anillo  (Ellipse 5: 158.01 / 2)
+const PR = 149; // radio del planeta         (Ellipse 4: 298.56 / 2)
+const TILT = -20.62; // inclinación del anillo, del export
+const PERIODO = 50; // segundos por vuelta
+const BASE = 72; // tamaño base del icono; con la escala da 36px..104px
+
+/*
+ * El planeta central usa la MISMA función de esfera grabada que los cuerpos
+ * del fondo, así que comparten trazo por construcción y no por copiar
+ * valores a mano. Aquí va bastante más brillante: es contenido, no ambiente.
+ */
+let semilla = 7;
+const rngPlaneta = () => {
+  semilla = (semilla * 1103515245 + 12345) % 2147483648;
+  return semilla / 2147483648;
+};
+const planeta = esferaGrabada(rngPlaneta, PR, "rayas", {
+  trazo: "#C0CAF5",
+  lineas: 58,
+});
+
+const items = ORBITA.map((key, i) => ({
+  key,
+  ...TECH[key],
+  fase: i / ORBITA.length, // reparto angular uniforme
+}));
+---
+
+<div
+  class="orbita relative"
+  style={`width:${W}px;height:${H}px;--cx:${CX}px;--cy:${CY}px;--pr:${PR}px;--base:${BASE}px`}
+  data-orbita
+  data-rx={RX}
+  data-ry={RY}
+  data-tilt={TILT}
+  data-periodo={PERIODO}
+>
+  <!-- Iconos de detrás: enmascarados con el agujero del planeta -->
+  <ul class="capa capa-fondo" data-capa="fondo"></ul>
+
+  <!-- Planeta y anillo: puro contorno, sin relleno -->
+  <svg
+    class="pointer-events-none absolute inset-0 h-full w-full"
+    viewBox={`0 0 ${W} ${H}`}
+    aria-hidden="true"
+  >
+    <defs>
+      {/*
+        Agujero del tamaño del planeta, con el mismo desvanecido del 97% que
+        usa la capa de iconos. Va centrado en el eje de rotación, así que la
+        inclinación del anillo no lo desplaza.
+      */}
+      <radialGradient id="orbita-hueco">
+        <stop offset="0.97" stop-color="#000" />
+        <stop offset="1" stop-color="#fff" />
+      </radialGradient>
+      <mask id="orbita-sin-planeta">
+        <rect x="-600" y="-600" width="2200" height="1800" fill="#fff" />
+        <circle cx={CX} cy={CY} r={PR} fill="url(#orbita-hueco)" />
+      </mask>
+    </defs>
+
+    {/*
+      El anillo va en DOS arcos, no en una elipse entera: el trasero se
+      recorta contra el planeta (por eso desaparece al pasar por detrás) y el
+      delantero se dibuja después, cruzando por delante como en Saturno.
+      Mitad de arriba = detrás, igual que el sin(a) del script.
+    */}
+    <g transform={`rotate(${TILT} ${CX} ${CY})`} fill="none" stroke="#C0CAF5"
+      stroke-opacity="0.55" stroke-width="1"
+      style="filter:drop-shadow(0 0 10px rgb(192 202 245 / 0.5))">
+      <path
+        d={`M${CX - RX} ${CY}A${RX} ${RY} 0 0 1 ${CX + RX} ${CY}`}
+        mask="url(#orbita-sin-planeta)"
+      />
+    </g>
+
+    <g
+      transform={`translate(${CX} ${CY})`}
+      opacity="0.7"
+      style="filter:drop-shadow(0 0 25px rgb(192 202 245 / 0.3))"
+      set:html={planeta}
+    />
+
+    {/* Arco delantero: por encima del planeta */}
+    <g transform={`rotate(${TILT} ${CX} ${CY})`} fill="none" stroke="#C0CAF5"
+      stroke-opacity="0.55" stroke-width="1"
+      style="filter:drop-shadow(0 0 10px rgb(192 202 245 / 0.5))">
+      <path d={`M${CX - RX} ${CY}A${RX} ${RY} 0 0 0 ${CX + RX} ${CY}`} />
+    </g>
+
+  </svg>
+
+  <!-- Iconos de delante: sin máscara -->
+  <ul class="capa capa-frente" data-capa="frente"></ul>
+
+  <!-- El script reparte estos <li> entre las dos capas según la profundidad -->
+  <template data-plantilla>
+    {
+      items.map((t) => (
+        <li class="tech" data-fase={t.fase}>
+          <svg
+            class="tech-icono"
+            viewBox="0 0 24 24"
+            fill={t.color}
+            role="img"
+            aria-label={t.nombre}
+          >
+            <path d={t.path} />
+          </svg>
+          <span class="tech-nombre" style={`color:${t.color}`}>
+            {t.nombre}
+          </span>
+        </li>
+      ))
+    }
+  </template>
+</div>
+
+<style>
+  .capa {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* El agujero que produce la oclusión, del tamaño exacto del planeta */
+  .capa-fondo {
+    -webkit-mask-image: radial-gradient(
+      circle var(--pr) at var(--cx) var(--cy),
+      transparent 0 97%,
+      #000 100%
+    );
+    mask-image: radial-gradient(
+      circle var(--pr) at var(--cx) var(--cy),
+      transparent 0 97%,
+      #000 100%
+    );
+  }
+
+  /*
+   * Cada tech es un punto de tamaño cero situado en el centro de la elipse.
+   * El script lo desplaza con --x/--y; los hijos se centran solos sobre él.
+   */
+  .tech {
+    position: absolute;
+    left: var(--cx);
+    top: var(--cy);
+    width: 0;
+    height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    translate: var(--x, 0) var(--y, 0);
+    opacity: var(--o, 1);
+    will-change: translate, opacity;
+  }
+
+  .tech-icono {
+    flex: none;
+    width: var(--base);
+    height: var(--base);
+    margin-top: calc(var(--base) / -2);
+    /* La escala va en el icono, no en el <li>: así el nombre no se deforma */
+    scale: var(--s, 1);
+    transition:
+      scale 200ms ease-out,
+      filter 200ms ease-out;
+  }
+
+  .tech-nombre {
+    margin-top: 10px;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    background: var(--color-glass);
+    border: 1px solid var(--color-hairline);
+    backdrop-filter: blur(7px);
+    font-size: 14px;
+    line-height: 19px;
+    white-space: nowrap;
+    opacity: 0;
+    translate: 0 4px;
+    transition:
+      opacity 200ms ease-out,
+      translate 200ms ease-out;
+    pointer-events: none;
+  }
+
+  /* Hover: el anillo entero pausa (lo hace el script) y este destaca */
+  .tech:hover {
+    z-index: 30;
+  }
+
+  .tech:hover .tech-icono {
+    scale: calc(var(--s, 1) * 1.45);
+    filter: drop-shadow(0 0 12px currentColor);
+  }
+
+  .tech:hover .tech-nombre {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  /* Sin animación: anillo quieto y todos los nombres a la vista */
+  @media (prefers-reduced-motion: reduce) {
+    .tech-nombre {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+</style>
+
+<script>
+  const TAU = Math.PI * 2;
+
+  function initOrbita(raiz: HTMLElement) {
+    const rx = Number(raiz.dataset.rx);
+    const ry = Number(raiz.dataset.ry);
+    const tilt = (Number(raiz.dataset.tilt) * Math.PI) / 180;
+    const periodo = Number(raiz.dataset.periodo);
+
+    const fondo = raiz.querySelector<HTMLElement>('[data-capa="fondo"]')!;
+    const frente = raiz.querySelector<HTMLElement>('[data-capa="frente"]')!;
+    const plantilla =
+      raiz.querySelector<HTMLTemplateElement>("[data-plantilla]")!;
+
+    const techs = [...plantilla.content.children] as HTMLElement[];
+    techs.forEach((el) => frente.append(el));
+    plantilla.remove();
+
+    const cos = Math.cos(tilt);
+    const sin = Math.sin(tilt);
+
+    const pintar = (t: number) => {
+      for (const el of techs) {
+        const a = (t + Number(el.dataset.fase)) * TAU;
+        const ex = Math.cos(a) * rx;
+        const ey = Math.sin(a) * ry;
+
+        // Punto de la elipse, rotado por la inclinación del anillo
+        el.style.setProperty("--x", `${ex * cos - ey * sin}px`);
+        el.style.setProperty("--y", `${ex * sin + ey * cos}px`);
+
+        // sin(a) > 0 => mitad delantera: más grande y más opaco
+        const p = (Math.sin(a) + 1) / 2;
+        el.style.setProperty("--s", `${0.5 + p * 0.95}`);
+        el.style.setProperty("--o", `${0.45 + p * 0.55}`);
+        el.style.zIndex = String(Math.round(p * 20));
+
+        // Cambio de capa solo al cruzar el horizonte, no en cada frame
+        const capa = p > 0.5 ? frente : fondo;
+        if (el.parentElement !== capa) capa.append(el);
+      }
+    };
+
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      pintar(0);
+      return;
+    }
+
+    let t = 0;
+    let ultimo = performance.now();
+    let pausado = false;
+
+    // Pausa solo al apuntar una tecnología, no toda la caja
+    raiz.addEventListener("pointerover", (e) => {
+      if ((e.target as Element).closest(".tech")) pausado = true;
+    });
+    raiz.addEventListener("pointerout", (e) => {
+      const hacia = e.relatedTarget as Element | null;
+      if (!hacia || !hacia.closest(".tech")) pausado = false;
+    });
+
+    // Sin gastar frames cuando la sección no está a la vista
+    let visible = true;
+    new IntersectionObserver(
+      ([e]) => {
+        visible = e.isIntersecting;
+        ultimo = performance.now();
+      },
+      { threshold: 0 },
+    ).observe(raiz);
+
+    const frame = (ahora: number) => {
+      const dt = (ahora - ultimo) / 1000;
+      ultimo = ahora;
+      if (visible) {
+        if (!pausado) t = (t + dt / periodo) % 1;
+        pintar(t);
+      }
+      requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  }
+
+  document
+    .querySelectorAll<HTMLElement>("[data-orbita]")
+    .forEach((el) => initOrbita(el));
+</script>

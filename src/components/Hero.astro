@@ -1,0 +1,40 @@
+---
+import { PERFIL } from "../data/icons";
+
+/**
+ * Bloque de identidad, heredado de la cabeza y el pie de la antigua sidebar.
+ * Va SIN cristal a propósito: es texto directo sobre la escena, y es lo que
+ * hace que el fondo se sienta nada más entrar.
+ */
+---
+
+<div
+  class="flex w-[var(--spacing-main)] flex-col items-start gap-[10px] px-[60px] pt-[70px] pb-[30px]"
+>
+  <h1 class="text-[36px] leading-[48px] font-bold text-ink">
+    {PERFIL.nombre}
+  </h1>
+
+  <p class="text-[16px] leading-[21px] font-bold text-ink">{PERFIL.titulo}</p>
+  <p class="text-[16px] leading-[21px] font-bold text-ink">{PERFIL.rol}</p>
+
+  <div class="mt-[14px] flex items-center gap-[25px]">
+    <span
+      class="inline-flex items-center gap-[8px] rounded-full border border-status/20 bg-[#1a1b2699] bg-[image:linear-gradient(#22c55e1a,#22c55e1a)] px-[12px] py-[4px]"
+    >
+      <span
+        class="block size-[8px] animate-pulse rounded-full bg-status shadow-[0_0_6px_rgb(34_197_94/0.9)]"
+      ></span>
+      <span class="text-[12px] leading-[16px] text-status-ink">
+        {PERFIL.estado}
+      </span>
+    </span>
+
+    <a
+      href={`mailto:${PERFIL.email}`}
+      class="text-[16px] leading-[19px] text-ink underline decoration-transparent decoration-1 underline-offset-4 transition-[color,text-decoration-color] duration-200 ease-out hover:text-amber hover:decoration-current"
+    >
+      {PERFIL.email}
+    </a>
+  </div>
+</div>
