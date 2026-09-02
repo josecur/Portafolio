@@ -1,5 +1,6 @@
 ---
 import Icon from "./Icon.astro";
+import { ruta } from "../lib/rutas";
 import TechBadge from "./TechBadge.astro";
 import { ICONS } from "../data/icons";
 import type { TechKey } from "../data/tech";
@@ -20,7 +21,7 @@ const { titulo, descripcion, imagen, techs, repo } = Astro.props;
 >
   <div class="h-[192px] shrink-0 overflow-hidden rounded-t-[var(--radius-card)] border-b border-divider">
     <img
-      src={imagen}
+      src={ruta(imagen)}
       alt={`Captura del proyecto ${titulo}`}
       width="389"
       height="191"
