@@ -54,7 +54,7 @@
   --spacing-card: 452px;
   /* Las cards pueden encoger hasta aqui antes de apilarse */
   --spacing-card-min: 380px;
-  /* Alto de la headbar + su aire, para el scroll-mt de las secciones */
+  /* Alto de la headbar. En movil crece porque el nav baja a su propia fila */
   --spacing-header: 76px;
 }
 
@@ -142,6 +142,27 @@
   background: var(--color-glass);
   border: 1px solid var(--color-hairline);
   backdrop-filter: blur(7px);
+}
+
+/*
+ * En pantallas pequenas la barra se parte en dos filas: nombre arriba y la
+ * tira de secciones debajo.
+ */
+@media (max-width: 820px) {
+  :root {
+    --spacing-header: 104px;
+  }
+}
+
+/*
+ * El blur es de lo mas caro que puede hacer una GPU movil, y a este tamano
+ * la diferencia entre 7 y 4px no se aprecia. Es el cambio con mejor relacion
+ * coste/beneficio del lote.
+ */
+@media (max-width: 1024px) {
+  .glass {
+    backdrop-filter: blur(4px);
+  }
 }
 
 /* Fallback: sin transparencia, el color sólido equivalente */

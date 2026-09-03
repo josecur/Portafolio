@@ -11,7 +11,7 @@ const { id, titulo, gap = 37 } = Astro.props;
 
 <section
   id={id}
-  class="flex w-full max-w-[var(--spacing-main)] scroll-mt-[120px] flex-col items-start px-[clamp(20px,4vw,50px)] py-[20px]"
+  class="flex w-full max-w-[var(--spacing-main)] scroll-mt-[calc(var(--spacing-header)+44px)] flex-col items-start px-[clamp(20px,4vw,50px)] py-[20px]"
   style={`gap:${gap}px`}
   aria-labelledby={`${id}-titulo`}
 >

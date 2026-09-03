@@ -1,5 +1,6 @@
 ---
-import { TECH, ORBITA } from "../data/tech";
+import { TECH, ORBITA, type TechKey } from "../data/tech";
+import TechBadge from "./TechBadge.astro";
 import { esferaGrabada } from "../lib/fondo";
 
 /**
@@ -41,6 +42,25 @@ const planeta = esferaGrabada(rngPlaneta, PR, "rayas", {
   lineas: 58,
 });
 
+/*
+ * En movil la orbita se queda como identidad visual pero sin etiquetas: a
+ * 360px los nombres caerian a 4.6px y ademas en tactil no hay hover que los
+ * revele. La informacion la lleva esta rejilla, que de paso muestra las 13
+ * tecnologias y no solo las 10 que caben girando.
+ */
+const GRUPOS = (
+  [
+    ["Lenguajes", "lenguaje"],
+    ["Frameworks", "framework"],
+    ["Herramientas", "herramienta"],
+  ] as const
+).map(([titulo, cat]) => ({
+  titulo,
+  techs: (Object.keys(TECH) as TechKey[]).filter(
+    (k) => TECH[k].categoria === cat,
+  ),
+}));
+
 const items = ORBITA.map((key, i) => ({
   key,
   ...TECH[key],
@@ -54,6 +74,7 @@ const items = ORBITA.map((key, i) => ({
   ni el tilt, y los iconos, sus etiquetas y la mascara de oclusion escalan
   todos juntos por construccion.
 -->
+<div class="orbita-envoltorio">
 <div class="orbita-caja" data-orbita-caja style={`--w:${W}px;--h:${H}px`}>
 <div
   class="orbita relative"
@@ -147,16 +168,59 @@ const items = ORBITA.map((key, i) => ({
 </div>
 </div>
 
+  {/* Solo visible en movil: ver GRUPOS arriba */}
+  <div class="tech-lista">
+    {
+      GRUPOS.map((g) => (
+        <div class="tech-grupo">
+          <h3 class="tech-grupo-titulo">{g.titulo}</h3>
+          <div class="tech-grupo-badges">
+            {g.techs.map((k) => (
+              <TechBadge tech={k} />
+            ))}
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</div>
+
 <style>
+  .orbita-envoltorio {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 34px;
+  }
+
+  .tech-lista {
+    display: none;
+  }
+
   .orbita-caja {
     display: flex;
     width: 100%;
     justify-content: center;
     /* Un scale no encoge el hueco que el elemento ocupa: hay que darselo */
     height: calc(var(--h) * var(--k, 1));
+    /*
+     * Guarda para la ventana anterior a que corra el script: ahi --k todavia
+     * vale 1 y la orbita mide sus 979px dentro de un contenedor mas estrecho.
+     * Sin esto, en movil aparece scroll horizontal en el primer pintado. El
+     * dibujo ocupa 441 de los 489 de semiancho, asi que no recorta nada real.
+     */
+    overflow: hidden;
   }
 
   .orbita {
+    /*
+     * flex: none es OBLIGATORIO. Como hijo de un flex container heredaria
+     * flex-shrink: 1 y flexbox le recortaria el ancho por debajo de los 979px
+     * ADEMAS del scale. La geometria interna (RX, RY, PR, los --x/--y del
+     * script) asume 979 fijos, asi que al aplastarla se descuadra el anillo.
+     */
+    flex: none;
     transform: scale(var(--k, 1));
     transform-origin: top center;
   }
@@ -231,19 +295,56 @@ const items = ORBITA.map((key, i) => ({
     pointer-events: none;
   }
 
-  /* Hover: el anillo entero pausa (lo hace el script) y este destaca */
-  .tech:hover {
-    z-index: 30;
+  @media (max-width: 820px) {
+    .tech-lista {
+      display: flex;
+      width: 100%;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .tech-grupo-titulo {
+      margin: 0 0 10px;
+      font-size: 14px;
+      line-height: 19px;
+      color: var(--color-ink);
+      opacity: 0.75;
+    }
+
+    .tech-grupo-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* A este tamano el nombre saldria a ~5px: lo lleva la rejilla */
+    .tech-nombre {
+      display: none;
+    }
   }
 
-  .tech:hover .tech-icono {
-    scale: calc(var(--s, 1) * 1.45);
-    filter: drop-shadow(0 0 12px currentColor);
-  }
+  /*
+   * Hover: el anillo entero pausa (lo hace el script) y este destaca.
+   *
+   * Va tras (hover:hover) porque en tactil un :hover se queda PEGADO tras el
+   * toque: el icono se quedaria agrandado y con el glow encendido hasta que
+   * tocaras otra cosa. Tailwind envuelve solo sus propias utilidades, no los
+   * estilos de componente, asi que aqui hay que ponerlo a mano.
+   */
+  @media (hover: hover) {
+    .tech:hover {
+      z-index: 30;
+    }
 
-  .tech:hover .tech-nombre {
-    opacity: 1;
-    translate: 0 0;
+    .tech:hover .tech-icono {
+      scale: calc(var(--s, 1) * 1.45);
+      filter: drop-shadow(0 0 12px currentColor);
+    }
+
+    .tech:hover .tech-nombre {
+      opacity: 1;
+      translate: 0 0;
+    }
   }
 
   /* Sin animación: anillo quieto y todos los nombres a la vista */

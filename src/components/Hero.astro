@@ -18,7 +18,7 @@ import { PERFIL } from "../data/icons";
   <p class="text-[16px] leading-[21px] font-bold text-ink">{PERFIL.titulo}</p>
   <p class="text-[16px] leading-[21px] font-bold text-ink">{PERFIL.rol}</p>
 
-  <div class="mt-[14px] flex items-center gap-[25px]">
+  <div class="mt-[14px] flex flex-wrap items-center gap-x-[25px] gap-y-[10px]">
     <span
       class="inline-flex items-center gap-[8px] rounded-full border border-status/20 bg-[#1a1b2699] bg-[image:linear-gradient(#22c55e1a,#22c55e1a)] px-[12px] py-[4px]"
     >
@@ -32,7 +32,7 @@ import { PERFIL } from "../data/icons";
 
     <a
       href={`mailto:${PERFIL.email}`}
-      class="text-[16px] leading-[19px] text-ink underline decoration-transparent decoration-1 underline-offset-4 transition-[color,text-decoration-color] duration-200 ease-out hover:text-amber hover:decoration-current"
+      class="max-w-full break-all text-[16px] leading-[19px] text-ink underline decoration-transparent decoration-1 underline-offset-4 transition-[color,text-decoration-color] duration-200 ease-out hover:text-amber hover:decoration-current"
     >
       {PERFIL.email}
     </a>
