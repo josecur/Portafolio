@@ -9,30 +9,30 @@ import { PERFIL } from "../data/icons";
 ---
 
 <div
-  class="flex w-full max-w-[var(--spacing-main)] flex-col items-start gap-[10px] px-[clamp(20px,4vw,60px)] pt-[70px] pb-[30px]"
+  class="flex w-full max-w-[var(--spacing-main)] flex-col items-start gap-[10px] px-[clamp(16px,3.2vw,48px)] pt-[56px] pb-[24px]"
 >
-  <h1 class="text-[36px] leading-[48px] font-bold text-ink">
+  <h1 class="text-titulo leading-[40px] font-bold text-ink">
     {PERFIL.nombre}
   </h1>
 
-  <p class="text-[16px] leading-[21px] font-bold text-ink">{PERFIL.titulo}</p>
-  <p class="text-[16px] leading-[21px] font-bold text-ink">{PERFIL.rol}</p>
+  <p class="text-cuerpo leading-[18px] font-bold text-ink">{PERFIL.titulo}</p>
+  <p class="text-cuerpo leading-[18px] font-bold text-ink">{PERFIL.rol}</p>
 
-  <div class="mt-[14px] flex flex-wrap items-center gap-x-[25px] gap-y-[10px]">
+  <div class="mt-[11px] flex flex-wrap items-center gap-x-[20px] gap-y-[10px]">
     <span
       class="inline-flex items-center gap-[8px] rounded-full border border-status/20 bg-[#1a1b2699] bg-[image:linear-gradient(#22c55e1a,#22c55e1a)] px-[12px] py-[4px]"
     >
       <span
         class="block size-[8px] animate-pulse rounded-full bg-status shadow-[0_0_6px_rgb(34_197_94/0.9)]"
       ></span>
-      <span class="text-[12px] leading-[16px] text-status-ink">
+      <span class="text-mini leading-[14px] text-status-ink">
         {PERFIL.estado}
       </span>
     </span>
 
     <a
       href={`mailto:${PERFIL.email}`}
-      class="max-w-full break-all text-[16px] leading-[19px] text-ink underline decoration-transparent decoration-1 underline-offset-4 transition-[color,text-decoration-color] duration-200 ease-out hover:text-amber hover:decoration-current"
+      class="max-w-full break-all text-cuerpo leading-[17px] text-ink underline decoration-transparent decoration-1 underline-offset-4 transition-[color,text-decoration-color] duration-200 ease-out hover:text-amber hover:decoration-current"
     >
       {PERFIL.email}
     </a>

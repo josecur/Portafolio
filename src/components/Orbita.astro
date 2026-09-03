@@ -201,6 +201,12 @@ const items = ORBITA.map((key, i) => ({
   .orbita-caja {
     display: flex;
     width: 100%;
+    /*
+     * La orbita se DIBUJA a 979px y se escala hasta este ancho. Sin el tope
+     * seguiria el ancho del contenedor y quedaria desproporcionada respecto
+     * al resto de la pagina, que se redujo un 20%.
+     */
+    max-width: var(--spacing-orbita);
     justify-content: center;
     /* Un scale no encoge el hueco que el elemento ocupa: hay que darselo */
     height: calc(var(--h) * var(--k, 1));
@@ -447,8 +453,8 @@ const items = ORBITA.map((key, i) => ({
     const w = parseFloat(getComputedStyle(caja).getPropertyValue("--w"));
     if (!w) return;
     const medir = () => {
-      // El ancho del padre, que si es fluido; el de la caja ya lleva el scale
-      const dispo = (caja.parentElement ?? caja).clientWidth;
+      // clientWidth ya viene topado por max-width: --spacing-orbita
+      const dispo = caja.clientWidth;
       caja.style.setProperty("--k", String(Math.min(1, dispo / w)));
     };
     medir();

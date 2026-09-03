@@ -16,24 +16,24 @@ const anio = new Date().getFullYear();
 ---
 
 <footer
-  class="mt-[60px] flex w-full max-w-[var(--spacing-main)] flex-col gap-[22px] border-t border-divider px-[clamp(20px,4vw,60px)] pt-[40px] pb-[60px]"
+  class="mt-[48px] flex w-full max-w-[var(--spacing-main)] flex-col gap-[18px] border-t border-divider px-[clamp(16px,3.2vw,48px)] pt-[32px] pb-[48px]"
 >
   {/* Dos fases distintas: primero se diseña, luego se construye */}
   <div class="flex flex-wrap items-center gap-x-[30px] gap-y-[14px]">
     <div class="flex flex-wrap items-center gap-[12px]">
-      <span class="text-[16px] leading-[21px] text-ink">Diseñado en</span>
+      <span class="text-cuerpo leading-[18px] text-ink">Diseñado en</span>
       <TechBadge tech="figma" />
     </div>
 
     <div class="flex flex-wrap items-center gap-[12px]">
-      <span class="text-[16px] leading-[21px] text-ink">Hecho con</span>
+      <span class="text-cuerpo leading-[18px] text-ink">Hecho con</span>
       <TechBadge tech="astro" />
       <TechBadge tech="typescript" />
       <TechBadge tech="tailwind" />
     </div>
   </div>
 
-  <div class="flex flex-col gap-[8px] text-[14px] leading-[20px] text-ink">
+  <div class="flex flex-col gap-[8px] text-menor leading-[17px] text-ink">
     <p>
       Astro {version("astro")} · Tailwind CSS {version("tailwindcss")} ·
       tipografía <span class="font-bold">JetBrains Mono</span> autoalojada ·
@@ -50,7 +50,7 @@ const anio = new Date().getFullYear();
     </p>
   </div>
 
-  <p class="text-[14px] leading-[20px] text-ink">
+  <p class="text-menor leading-[17px] text-ink">
     © {anio} Jose Cordova
   </p>
 </footer>

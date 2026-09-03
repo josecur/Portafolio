@@ -8,22 +8,22 @@ const { prompt, texto } = Astro.props;
 ---
 
 <div
-  class="glass w-full max-w-[var(--spacing-content)] rounded-[var(--radius-card)] pt-[10px] pb-[50px] shadow-glow"
+  class="glass w-full max-w-[var(--spacing-content)] rounded-[var(--radius-card)] pt-[8px] pb-[40px] shadow-glow"
 >
   <!-- Semáforo estilo terminal Unix -->
   <div class="flex items-center p-[10px]" aria-hidden="true">
     <div class="flex items-center gap-[12px] px-[16px] py-[10px]">
-      <span class="block size-[15px] rounded-full bg-unix-red"></span>
-      <span class="block size-[15px] rounded-full bg-unix-yellow"></span>
-      <span class="block size-[15px] rounded-full bg-unix-green"></span>
+      <span class="block size-[12px] rounded-full bg-unix-red"></span>
+      <span class="block size-[12px] rounded-full bg-unix-yellow"></span>
+      <span class="block size-[12px] rounded-full bg-unix-green"></span>
     </div>
   </div>
 
-  <div class="flex flex-col px-[23px] py-[5px]">
+  <div class="flex flex-col px-[18px] py-[4px]">
     <pre
-      class="overflow-x-auto p-[10px] font-mono text-[16px] leading-[19px] text-amber max-[400px]:text-[13px] max-[400px]:leading-[16px]"
+      class="overflow-x-auto p-[10px] font-mono text-cuerpo leading-[17px] text-amber max-[400px]:text-[13px] max-[400px]:leading-[14px]"
       aria-hidden="true">{prompt}</pre>
 
-    <p class="p-[10px] text-[16px] leading-[19px] text-ink">{texto}</p>
+    <p class="p-[10px] text-cuerpo leading-[17px] text-ink">{texto}</p>
   </div>
 </div>

@@ -6,17 +6,17 @@ interface Props {
   gap?: number;
 }
 
-const { id, titulo, gap = 37 } = Astro.props;
+const { id, titulo, gap = 30 } = Astro.props;
 ---
 
 <section
   id={id}
-  class="flex w-full max-w-[var(--spacing-main)] scroll-mt-[calc(var(--spacing-header)+44px)] flex-col items-start px-[clamp(20px,4vw,50px)] py-[20px]"
+  class="flex w-full max-w-[var(--spacing-main)] scroll-mt-[calc(var(--spacing-header)+36px)] flex-col items-start px-[clamp(16px,3.2vw,40px)] py-[16px]"
   style={`gap:${gap}px`}
   aria-labelledby={`${id}-titulo`}
 >
   <div class="flex w-full max-w-[var(--spacing-content)] items-center p-[10px]">
-    <h2 id={`${id}-titulo`} class="text-[36px] leading-[48px] text-cyan">
+    <h2 id={`${id}-titulo`} class="text-titulo leading-[40px] text-cyan">
       {titulo}
     </h2>
   </div>
