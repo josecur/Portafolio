@@ -18,13 +18,13 @@ export const SOCIALS = [
   {
     nombre: "Instagram",
     icon: "instagram" as const,
-    url: "https://instagram.com/",
+    url: "https://www.instagram.com/jos3_cf/",
   },
-  { nombre: "Github", icon: "github" as const, url: "https://github.com/" },
+  { nombre: "Github", icon: "github" as const, url: "https://github.com/josecur" },
   {
     nombre: "LinkedIn",
     icon: "linkedin" as const,
-    url: "https://linkedin.com/in/",
+    url: "https://www.linkedin.com/in/jose-cordova-fernandez-33a512342/",
   },
 ];
 
@@ -34,6 +34,6 @@ export const PERFIL = {
   rol: "FullStack Developer",
   estado: "Buscando Trabajo",
   email: "josecordovafernand3z@gmail.com",
-  bio: "Estudiante avanzado de 8mo ciclo de Ingeniería de Sistemas de Información, cuento con experiencia siendo líder, me destaco por mi habilidad para planificar, coordinar y motivar a los miembros del equipo, asegurando consistentemente el cumplimiento exitoso de los objetivos.",
+  bio: "Estudiante de 9no ciclo multidisciplinario con experiencia en el diseño e implementación de soluciones integrales. Especializado en el desarrollo de interfaces web con Astro, React, Angular y TypeScript. Cuento con experiencia en el modelado relacional y creación de dashboards en Power BI mediante DAX. Adicionalmente, poseo conocimientos en la integración de modelos de inteligencia artificial (API de Ollama) con Python y análisis de tráfico de red, respaldado por una sólida base en infraestructura de servidores y contenedores.",
   prompt: "┌──(josec@JOSE-CF)-[System32]\n└─//cat README.md",
 };
