@@ -3,18 +3,18 @@
     "id": "power-automate-power-apps",
     "titulo": "Power Automate & Power Apps",
     "descripcion": "Nivel Avanzado",
-    "imagen": "/images/certificados/power-automate.svg",
+    "imagen": "/images/certificados/Cert_PowerApps&PowerAutomate.jpeg",
     "nivel": "Avanzado",
     "horas": 30,
-    "pdf": "/pdf/certificados/power-automate.pdf"
+    "pdf": "/pdf/certificados/Cert_PowerApps&PowerAutomate.pdf"
   },
   {
     "id": "power-automate-power-apps-2",
     "titulo": "Power Automate & Power Apps",
-    "descripcion": "Nivel Avanzado",
+    "descripcion": "Nivel Intermedio",
     "imagen": "/images/certificados/power-automate.svg",
-    "nivel": "Avanzado",
+    "nivel": "Intermedio",
     "horas": 30,
-    "pdf": "/pdf/certificados/power-automate.pdf"
+    "pdf": "/pdf/certificados/Cert_PowerApps&PowerAutomate.pdf"
   }
 ]
