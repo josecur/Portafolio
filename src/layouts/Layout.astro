@@ -15,6 +15,18 @@ const {
   title = `${PERFIL.nombre} — ${PERFIL.rol}`,
   description = PERFIL.titulo,
 } = Astro.props;
+
+/*
+ * Open Graph exige URLs ABSOLUTAS: el rastreador de LinkedIn o WhatsApp corre
+ * en sus servidores, no en el navegador del visitante, asi que una ruta como
+ * "/Portafolio/og.png" no le dice nada.
+ *
+ * Por eso ruta() no basta aqui —devuelve rutas relativas a la raiz del
+ * dominio— y hay que componerla con Astro.site, que sale de astro.config.mjs.
+ */
+const absoluta = (p: string) => new URL(ruta(p), Astro.site).href;
+const canonica = absoluta("/");
+const ogImagen = absoluta("/og.png");
 ---
 
 <!doctype html>
@@ -22,6 +34,7 @@ const {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="canonical" href={canonica} />
     <link rel="icon" type="image/svg+xml" href={ruta("/favicon.svg")} />
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -34,7 +47,22 @@ const {
     <meta property="og:site_name" content={PERFIL.nombre} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonica} />
+
+    {/* Sin imagen, summary_large_image se degrada: es el tipo de tarjeta
+        definido por llevarla. La captura es PNG porque los rastreadores no
+        renderizan SVG, que es de lo que esta hecho el resto del sitio. */}
+    <meta property="og:image" content={ogImagen} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="3600" />
+    <meta property="og:image:height" content="1893" />
+    <meta
+      property="og:image:alt"
+      content={`${PERFIL.nombre} — ${PERFIL.rol}`}
+    />
+
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImagen} />
   </head>
 
   <body>
