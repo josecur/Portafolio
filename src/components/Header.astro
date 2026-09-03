@@ -19,24 +19,24 @@ const NAV = [
 ---
 
 <header
-  class="glass sticky top-[20px] z-50 mx-auto flex h-[var(--spacing-header)] w-[var(--spacing-main)] items-center justify-between rounded-[var(--radius-btn)] px-[60px] shadow-glow"
+  class="glass sticky top-[20px] z-50 mx-auto flex h-[var(--spacing-header)] w-full max-w-[var(--spacing-main)] items-center justify-between rounded-[var(--radius-btn)] px-[clamp(20px,4vw,60px)] shadow-glow"
 >
   <a
     href="#whoiam"
-    class="text-[20px] leading-[26px] font-bold text-ink transition-[color,text-shadow] duration-200 ease-out hover:text-amber hover:[text-shadow:0_0_10px_rgb(255_202_115_/_0.5)]"
+    class="text-[clamp(17px,1.6vw,20px)] leading-[26px] font-bold text-ink transition-[color,text-shadow] duration-200 ease-out hover:text-amber hover:[text-shadow:0_0_10px_rgb(255_202_115_/_0.5)]"
   >
     {PERFIL.nombre}
   </a>
 
   <nav aria-label="Secciones del portafolio">
-    <ul class="flex list-none items-center gap-[28px]">
+    <ul class="flex list-none items-center gap-[clamp(14px,2vw,28px)]">
       {
         NAV.map(({ id, label }) => (
           <li>
             <a
               href={`#${id}`}
               data-nav={id}
-              class="block py-[8px] text-[16px] leading-[21px] whitespace-nowrap text-ink transition-[color,transform,text-shadow] duration-200 ease-out hover:-translate-y-[2px] hover:text-amber aria-[current=true]:text-amber aria-[current=true]:[text-shadow:0_0_10px_rgb(255_202_115_/_0.5)]"
+              class="block py-[8px] text-[clamp(14px,1.2vw,16px)] leading-[21px] whitespace-nowrap text-ink transition-[color,transform,text-shadow] duration-200 ease-out hover:-translate-y-[2px] hover:text-amber aria-[current=true]:text-amber aria-[current=true]:[text-shadow:0_0_10px_rgb(255_202_115_/_0.5)]"
             >
               - {label}
             </a>

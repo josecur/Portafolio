@@ -48,6 +48,13 @@ const items = ORBITA.map((key, i) => ({
 }));
 ---
 
+<!--
+  La caja externa absorbe el redimensionado: la orbita conserva su geometria
+  en pixeles (979x547) y solo se escala. Asi no hay que recalcular RX, RY, PR
+  ni el tilt, y los iconos, sus etiquetas y la mascara de oclusion escalan
+  todos juntos por construccion.
+-->
+<div class="orbita-caja" data-orbita-caja style={`--w:${W}px;--h:${H}px`}>
 <div
   class="orbita relative"
   style={`width:${W}px;height:${H}px;--cx:${CX}px;--cy:${CY}px;--pr:${PR}px;--base:${BASE}px`}
@@ -138,8 +145,22 @@ const items = ORBITA.map((key, i) => ({
     }
   </template>
 </div>
+</div>
 
 <style>
+  .orbita-caja {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    /* Un scale no encoge el hueco que el elemento ocupa: hay que darselo */
+    height: calc(var(--h) * var(--k, 1));
+  }
+
+  .orbita {
+    transform: scale(var(--k, 1));
+    transform-origin: top center;
+  }
+
   .capa {
     position: absolute;
     inset: 0;
@@ -316,6 +337,26 @@ const items = ORBITA.map((key, i) => ({
     };
     requestAnimationFrame(frame);
   }
+
+  /**
+   * Escala la orbita para que quepa en el ancho disponible. La geometria
+   * interna no se toca: solo cambia el factor --k de la caja.
+   */
+  function ajustarEscala(caja: HTMLElement) {
+    const w = parseFloat(getComputedStyle(caja).getPropertyValue("--w"));
+    if (!w) return;
+    const medir = () => {
+      // El ancho del padre, que si es fluido; el de la caja ya lleva el scale
+      const dispo = (caja.parentElement ?? caja).clientWidth;
+      caja.style.setProperty("--k", String(Math.min(1, dispo / w)));
+    };
+    medir();
+    addEventListener("resize", medir, { passive: true });
+  }
+
+  document
+    .querySelectorAll<HTMLElement>("[data-orbita-caja]")
+    .forEach((caja) => ajustarEscala(caja));
 
   document
     .querySelectorAll<HTMLElement>("[data-orbita]")

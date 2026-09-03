@@ -22,14 +22,14 @@ const participaciones = await getCollection("participaciones");
   <Section id="whoiam" titulo="Whoiam" gap={30}>
     <Consola prompt={PERFIL.prompt} texto={PERFIL.bio} />
 
-    <div class="flex w-[var(--spacing-content)] items-center justify-between">
+    <div class="flex w-full max-w-[var(--spacing-content)] flex-wrap items-center justify-between gap-[20px]">
       {SOCIALS.map((s) => <SocialButton {...s} />)}
     </div>
   </Section>
 
   <Section id="stack" titulo="Tecnologías">
     {/* La órbita conserva sus 979px de geometría original; solo se centra */}
-    <div class="flex w-[var(--spacing-content)] justify-center">
+    <div class="flex w-full max-w-[var(--spacing-content)] justify-center">
       <Orbita />
     </div>
   </Section>

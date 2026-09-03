@@ -52,6 +52,8 @@
   --spacing-content: 1200px;
   /* Las cards conservan su ancho original: (979 - 50 - 25) / 2 */
   --spacing-card: 452px;
+  /* Las cards pueden encoger hasta aqui antes de apilarse */
+  --spacing-card-min: 380px;
   /* Alto de la headbar + su aire, para el scroll-mt de las secciones */
   --spacing-header: 76px;
 }
