@@ -14,7 +14,7 @@
  */
 
 /** PRNG determinista (mulberry32) */
-function sembrar(semilla: number): () => number {
+export function sembrar(semilla: number): () => number {
   let a = semilla >>> 0;
   return () => {
     a = (a + 0x6d2b79f5) >>> 0;
@@ -34,7 +34,67 @@ const limitar = (n: number, a: number, b: number) => (n < a ? a : n > b ? b : n)
 
 /** Identificadores únicos para las máscaras, únicos dentro del documento */
 let contador = 0;
-const uid = () => `e${(contador++).toString(36)}`;
+export const uid = () => `e${(contador++).toString(36)}`;
+
+/**
+ * Cinta ahusada: gruesa en el centro y afilada en las puntas. Es el trazo de
+ * buril del que están hechos los surcos de esferaGrabada, extraído aquí para
+ * poder tallar cualquier forma y no solo esferas.
+ *
+ * `grosor` admite una función de u (0 en el inicio, 1 en el final) para que el
+ * surco engorde hacia la sombra, que es lo que da volumen a una superficie
+ * plana.
+ */
+export function cintaGrabada(
+  x0: number,
+  y0: number,
+  x1: number,
+  y1: number,
+  grosor: number | ((u: number) => number),
+  pasos = 7,
+): string {
+  const dx = x1 - x0;
+  const dy = y1 - y0;
+  const L = Math.hypot(dx, dy) || 1;
+  const nx = -dy / L;
+  const ny = dx / L;
+  const g = typeof grosor === "function" ? grosor : () => grosor;
+
+  const arriba: string[] = [];
+  const abajo: string[] = [];
+  for (let s = 0; s <= pasos; s++) {
+    const u = s / pasos;
+    const cx = x0 + dx * u;
+    const cy = y0 + dy * u;
+    // Mismo afilado que usan los surcos de la esfera
+    const h = 0.5 * g(u) * Math.sin(Math.PI * Math.max(0.001, u)) ** 0.35;
+    arriba.push(`${s === 0 ? "M" : "L"}${d1(cx + nx * h)} ${d1(cy + ny * h)}`);
+    abajo.unshift(`L${d1(cx - nx * h)} ${d1(cy - ny * h)}`);
+  }
+  return `<path d="${arriba.join("")}${abajo.join("")}Z"/>`;
+}
+
+/**
+ * Contorno de un tubo de radio variable a lo largo de una polilínea. Sirve
+ * para brazos, piernas y cordones: un miembro es un tubo que adelgaza.
+ */
+export function tubo(pts: [number, number][], radios: number[]): string {
+  const izq: string[] = [];
+  const der: string[] = [];
+  for (let i = 0; i < pts.length; i++) {
+    const [x, y] = pts[i];
+    const a = pts[Math.max(0, i - 1)];
+    const b = pts[Math.min(pts.length - 1, i + 1)];
+    const dx = b[0] - a[0];
+    const dy = b[1] - a[1];
+    const L = Math.hypot(dx, dy) || 1;
+    const nx = (-dy / L) * radios[i];
+    const ny = (dx / L) * radios[i];
+    izq.push(`${i === 0 ? "M" : "L"}${d1(x + nx)} ${d1(y + ny)}`);
+    der.unshift(`L${d1(x - nx)} ${d1(y - ny)}`);
+  }
+  return `<path d="${izq.join("")}${der.join("")}Z"/>`;
+}
 
 export const ANCHO = 1920;
 export const ALTO = 2200;
