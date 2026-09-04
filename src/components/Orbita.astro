@@ -117,8 +117,8 @@ const items = ORBITA.map((key, i) => ({
       Mitad de arriba = detrás, igual que el sin(a) del script.
     */}
     <g transform={`rotate(${TILT} ${CX} ${CY})`} fill="none" stroke="#C0CAF5"
-      stroke-opacity="0.55" stroke-width="1"
-      style="filter:drop-shadow(0 0 10px rgb(192 202 245 / 0.5))">
+      stroke-opacity="0.68" stroke-width="1"
+      style="filter:drop-shadow(0 0 5px rgb(192 202 245 / 0.8)) drop-shadow(0 0 18px rgb(192 202 245 / 0.5))">
       <path
         d={`M${CX - RX} ${CY}A${RX} ${RY} 0 0 1 ${CX + RX} ${CY}`}
         mask="url(#orbita-sin-planeta)"
@@ -128,14 +128,14 @@ const items = ORBITA.map((key, i) => ({
     <g
       transform={`translate(${CX} ${CY})`}
       opacity="0.7"
-      style="filter:drop-shadow(0 0 25px rgb(192 202 245 / 0.3))"
+      style="filter:drop-shadow(0 0 16px rgb(192 202 245 / 0.45)) drop-shadow(0 0 46px rgb(192 202 245 / 0.26))"
       set:html={planeta}
     />
 
     {/* Arco delantero: por encima del planeta */}
     <g transform={`rotate(${TILT} ${CX} ${CY})`} fill="none" stroke="#C0CAF5"
-      stroke-opacity="0.55" stroke-width="1"
-      style="filter:drop-shadow(0 0 10px rgb(192 202 245 / 0.5))">
+      stroke-opacity="0.68" stroke-width="1"
+      style="filter:drop-shadow(0 0 5px rgb(192 202 245 / 0.8)) drop-shadow(0 0 18px rgb(192 202 245 / 0.5))">
       <path d={`M${CX - RX} ${CY}A${RX} ${RY} 0 0 0 ${CX + RX} ${CY}`} />
     </g>
 
@@ -194,8 +194,31 @@ const items = ORBITA.map((key, i) => ({
     gap: 34px;
   }
 
+  /*
+   * La rejilla acompana SIEMPRE a la orbita, no solo en movil. En el anillo
+   * caben 10 tecnologias girando; aqui estan las 13 y agrupadas, asi que la
+   * orbita queda como lo que mejor hace —identidad visual— y la informacion
+   * se lee de un vistazo sin esperar a que un icono pase por delante.
+   */
   .tech-lista {
-    display: none;
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .tech-grupo-titulo {
+    margin: 0 0 10px;
+    font-size: var(--text-menor);
+    line-height: 18px;
+    color: var(--color-ink);
+    opacity: 0.75;
+  }
+
+  .tech-grupo-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
   .orbita-caja {
@@ -302,25 +325,10 @@ const items = ORBITA.map((key, i) => ({
   }
 
   @media (max-width: 820px) {
+    /* Tres columnas no caben: se apilan */
     .tech-lista {
-      display: flex;
-      width: 100%;
-      flex-direction: column;
+      grid-template-columns: 1fr;
       gap: 20px;
-    }
-
-    .tech-grupo-titulo {
-      margin: 0 0 10px;
-      font-size: 14px;
-      line-height: 19px;
-      color: var(--color-ink);
-      opacity: 0.75;
-    }
-
-    .tech-grupo-badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
     }
 
     /* A este tamano el nombre saldria a ~5px: lo lleva la rejilla */

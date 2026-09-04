@@ -12,29 +12,91 @@ import { PERFIL } from "../data/icons";
   class="flex w-full max-w-[var(--spacing-main)] flex-col items-start gap-[10px] px-[clamp(16px,3.2vw,48px)] pt-[56px] pb-[24px]"
 >
   <h1 class="text-titulo leading-[40px] font-bold text-ink">
-    {PERFIL.nombre}
+    {PERFIL.nombre} / {PERFIL.rol}
   </h1>
 
   <p class="text-cuerpo leading-[18px] font-bold text-ink">{PERFIL.titulo}</p>
-  <p class="text-cuerpo leading-[18px] font-bold text-ink">{PERFIL.rol}</p>
+  <p class="text-cuerpo leading-[18px] font-bold text-ink">
+    {PERFIL.universidad}
+  </p>
 
   <div class="mt-[11px] flex flex-wrap items-center gap-x-[20px] gap-y-[10px]">
-    <span
-      class="inline-flex items-center gap-[8px] rounded-full border border-status/20 bg-[#1a1b2699] bg-[image:linear-gradient(#22c55e1a,#22c55e1a)] px-[12px] py-[4px]"
-    >
-      <span
-        class="block size-[8px] animate-pulse rounded-full bg-status shadow-[0_0_6px_rgb(34_197_94/0.9)]"
-      ></span>
-      <span class="text-mini leading-[14px] text-status-ink">
-        {PERFIL.estado}
-      </span>
-    </span>
-
-    <a
-      href={`mailto:${PERFIL.email}`}
-      class="max-w-full break-all text-cuerpo leading-[17px] text-ink underline decoration-transparent decoration-1 underline-offset-4 transition-[color,text-decoration-color] duration-200 ease-out hover:text-amber hover:decoration-current"
+    {/*
+      Copia al portapapeles en vez de abrir el cliente de correo: un mailto
+      lanza una app que mucha gente no tiene configurada y se queda en nada.
+      Es un <button> y no un <a> porque ya no navega a ningun sitio.
+    */}
+    <button
+      type="button"
+      data-copiar={PERFIL.email}
+      class="group/mail max-w-full cursor-pointer break-all text-left text-cuerpo leading-[17px] text-ink underline decoration-transparent decoration-1 underline-offset-4 transition-[color,text-decoration-color] duration-200 ease-out hover:text-amber hover:decoration-current"
     >
       {PERFIL.email}
-    </a>
+    </button>
+
+    {/*
+      Region viva: existe siempre y vacia, para que el lector de pantalla
+      anuncie el cambio de texto. Si la ocultara con [hidden] no lo haria.
+    */}
+    <span
+      data-aviso
+      role="status"
+      aria-live="polite"
+      class="text-menor leading-[17px] text-status-ink opacity-0 transition-opacity duration-200 ease-out data-[visible]:opacity-100"
+    ></span>
   </div>
 </div>
+
+<script>
+  const boton = document.querySelector<HTMLButtonElement>("[data-copiar]");
+  const aviso = document.querySelector<HTMLElement>("[data-aviso]");
+
+  if (boton && aviso) {
+    let temporizador: number;
+
+    const decir = (texto: string, ok: boolean) => {
+      aviso.textContent = texto;
+      aviso.dataset.visible = "";
+      aviso.classList.toggle("text-status-ink", ok);
+      aviso.classList.toggle("text-amber", !ok);
+      clearTimeout(temporizador);
+      temporizador = setTimeout(() => {
+        delete aviso.dataset.visible;
+        // El texto se limpia despues del fundido, no a la vez
+        setTimeout(() => (aviso.textContent = ""), 200);
+      }, 2600);
+    };
+
+    /*
+     * navigator.clipboard exige contexto seguro (https o localhost) y puede
+     * fallar si el permiso esta denegado. El respaldo con execCommand esta
+     * obsoleto pero sigue funcionando donde el API moderno no llega.
+     */
+    const copiar = async (texto: string) => {
+      try {
+        await navigator.clipboard.writeText(texto);
+        return true;
+      } catch {
+        try {
+          const ta = document.createElement("textarea");
+          ta.value = texto;
+          ta.setAttribute("readonly", "");
+          ta.style.position = "fixed";
+          ta.style.opacity = "0";
+          document.body.append(ta);
+          ta.select();
+          const ok = document.execCommand("copy");
+          ta.remove();
+          return ok;
+        } catch {
+          return false;
+        }
+      }
+    };
+
+    boton.addEventListener("click", async () => {
+      const ok = await copiar(boton.dataset.copiar!);
+      decir(ok ? "Correo copiado" : "No se pudo copiar", ok);
+    });
+  }
+</script>

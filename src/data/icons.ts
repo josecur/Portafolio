@@ -29,10 +29,11 @@ export const SOCIALS = [
 ];
 
 export const PERFIL = {
-  nombre: "Jose Cordova",
+  nombre: "JOSÉ CÓRDOVA",
   titulo: "Ingeniero de Sistemas de Información",
-  rol: "FullStack Developer",
+  rol: "FULLSTACK DEVELOPER",
   estado: "Buscando Trabajo",
+  universidad: "Universidad San Ignacio de Loyola",
   email: "josecordovafernand3z@gmail.com",
   bio: "Estudiante de 9no ciclo multidisciplinario con experiencia en el diseño e implementación de soluciones integrales. Especializado en el desarrollo de interfaces web con Astro, React, Angular y TypeScript. Cuento con experiencia en el modelado relacional y creación de dashboards en Power BI mediante DAX. Adicionalmente, poseo conocimientos en la integración de modelos de inteligencia artificial (API de Ollama) con Python y análisis de tráfico de red, respaldado por una sólida base en infraestructura de servidores y contenedores.",
   prompt: "┌──(josec@JOSE-CF)-[System32]\n└─//cat README.md",

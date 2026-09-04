@@ -22,16 +22,44 @@ const participaciones = await getCollection("participaciones");
   <Section id="whoiam" titulo="Whoiam" gap={24}>
     <Consola prompt={PERFIL.prompt} texto={PERFIL.bio} />
 
-    <div class="flex w-full max-w-[var(--spacing-content)] flex-wrap items-center justify-between gap-[20px]">
+    <div
+      class="flex w-full max-w-[var(--spacing-content)] flex-wrap items-center justify-between gap-[20px]"
+    >
       {SOCIALS.map((s) => <SocialButton {...s} />)}
     </div>
   </Section>
 
-  <Section id="stack" titulo="Tecnologías">
+  <Section id="stack" titulo="Stack Tecnologico">
     {/* La órbita conserva sus 979px de geometría original; solo se centra */}
     <div class="flex w-full max-w-[var(--spacing-content)] justify-center">
       <Orbita />
     </div>
+
+    {
+      /*
+      Puente hacia Proyectos. La seccion ya responde "que se"; sin esto queda
+      cerrada sobre si misma, y encima la orbita es un bucle: no tiene final,
+      asi que nunca llega el momento de "ya esta, que sigue". Esta linea da el
+      motivo para bajar, que es lo unico que una flecha suelta no da.
+    */
+    }
+    <a
+      href="#proyectos"
+      class="group/puente inline-flex self-center items-center gap-[14px] rounded-[8px] px-[10px] py-[8px] text-cuerpo leading-[18px] text-ink transition-[color,text-shadow] duration-200 ease-out hover:text-amber hover:[text-shadow:0_0_10px_rgb(255_202_115_/_0.35)]"
+    >
+      {/* Las flechas bajan al pasar el raton: el gesto apunta a donde lleva */}
+      <span
+        aria-hidden="true"
+        class="transition-transform duration-200 ease-out group-hover/puente:translate-y-[3px]"
+        >&#8595;</span
+      >
+      Así es como los uso
+      <span
+        aria-hidden="true"
+        class="transition-transform duration-200 ease-out group-hover/puente:translate-y-[3px]"
+        >&#8595;</span
+      >
+    </a>
   </Section>
 
   <Section id="proyectos" titulo="Proyectos">
